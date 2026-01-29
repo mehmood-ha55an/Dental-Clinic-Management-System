@@ -1,0 +1,136 @@
+﻿@model List<Dental_Clinic.Models.Appointment>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">
+            <i class="bi bi-list-check"></i>
+            Appointments
+        </h5>
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Patient</th>
+                    <th>Phone</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Message</th>
+                    <th>Branch</th>
+                    <th>Status</th>
+                    <th width="120">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.PatientName</td>
+                        <td>@item.PhoneNumber</td>
+                        <td>@item.AppointmentDate.ToString("dd MMM yyyy")</td>
+                        <td>@item.AppointmentTime</td>
+                        <td style="max-width:250px;">@item.Message</td>
+                        <td>
+                            <span class="badge bg-info">@item.Branch</span>
+                        </td>
+                        <td>
+                            <span class="badge
+                             @(item.Status == "Completed" ? "bg-success" :
+                                            item.Status == "Cancelled" ? "bg-danger" :
+                                            "bg-warning")">
+                              @item.Status
+                            </span>
+                        </td>
+
+                        <td>
+                            <a href="/Prescription/Create?appointmentId=@item.Id"
+                               class="btn btn-sm btn-info">
+                               Prescription
+                            </a>
+
+                            <button class="btn btn-sm btn-success mt-2"
+                                    onclick="updateStatus(@item.Id, 'Completed')">
+                                ✔
+                            </button>
+                            <button class="btn btn-sm btn-danger mt-2"
+                                    onclick="updateStatus(@item.Id, 'Cancelled')">
+                                ✖
+                            </button>
+                            <a asp-action="Edit" asp-route-id="@item.Id"
+                               class="btn btn-sm btn-warning mt-2">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <button class="btn btn-sm btn-danger mt-2"
+                                    onclick="deleteAppointment(@item.Id)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function deleteAppointment(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This appointment will be permanently deleted!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                            fetch('/Appointment/Delete?id=' + id, {
+                            method: 'POST'
+                             })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                        Toast.fire({
+                            icon: 'success',
+                            title: data.message
+                        });
+
+                        setTimeout(() => location.reload(), 800);
+                    } else {
+                        Toast.fire({
+                            icon: 'error',
+                            title: data.message
+                        });
+                    }
+                    });
+                }
+            });
+        }
+    </script>
+    <script>
+                function updateStatus(id, status) {
+            fetch(`/Appointment/UpdateStatus?id=${id}&status=${status}`, {
+                method: 'POST'
+            })
+            .then(r => r.json())
+            .then(res => {
+                if (res.success) {
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Status updated'
+                    });
+                    setTimeout(() => location.reload(), 800);
+                }
+            });
+        }
+
+    </script>
+
+}

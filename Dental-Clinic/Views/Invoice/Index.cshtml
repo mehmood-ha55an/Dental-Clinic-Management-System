@@ -1,0 +1,105 @@
+﻿@model List<Invoice>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Invoices</h4>
+
+    <a asp-action="Create" class="btn btn-primary">
+        ➕ New Invoice
+    </a>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>#</th>
+            <th>Patient</th>
+            <th>Date</th>
+            <th>Total Amount</th>
+            <th>Paid</th>
+            <th>Remaining</th>
+            <th width="160">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            int i = 1;
+            foreach (var invoice in Model)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@invoice.PatientName</td>
+                    <td>@invoice.InvoiceDate.ToString("dd-MMM-yyyy")</td>
+                    <td><strong>PKR @invoice.TotalAmount</strong></td>
+                    <td>@invoice.PaidAmount</td>
+                    <td>@invoice.RemainingAmount</td>
+                    <td>
+                        <a asp-action="Print"
+                           asp-route-id="@invoice.Id"
+                           target="_blank"
+                           class="btn btn-sm btn-secondary">
+                            🖨
+                        </a>
+                        <a asp-action="Edit"
+                           asp-route-id="@invoice.Id"
+                           class="btn btn-sm btn-warning">
+                            ✏
+                        </a>
+
+                        <button class="btn btn-sm btn-danger"
+                                onclick="deleteInvoice(@invoice.Id)">
+                            🗑
+                        </button>
+                    </td>
+                </tr>
+                i++;
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center text-muted">
+                    No invoices found
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        function deleteInvoice(id) {
+            Swal.fire({
+                title: 'Delete invoice?',
+                text: 'This action cannot be undone.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/Invoice/Delete?id=' + id, {
+                        method: 'POST'                      
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'success',
+                                title: data.message,
+                                showConfirmButton: false,
+                                timer: 2500
+                            });
+
+                            setTimeout(() => location.reload(), 800);
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

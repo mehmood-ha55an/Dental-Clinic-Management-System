@@ -1,0 +1,82 @@
+﻿@model Prescription
+@{
+    var appt = ViewBag.Appointment;
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">🦷 Prescription</h5>
+    </div>
+
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+
+            <input type="hidden" asp-for="AppointmentId" />
+
+            <div class="mb-3">
+                <label class="form-label">Doctor Name</label>
+                <input asp-for="DoctorName" class="form-control" />
+            </div>
+
+            <hr />
+
+            <h6>Medicines</h6>
+
+            <div id="medicineList">
+                <div class="row mb-2">
+                    <div class="col-md-3">
+                        <input name="Items[0].MedicineName" class="form-control" placeholder="Medicine" />
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Items[0].Dosage" class="form-control" placeholder="Dosage" />
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Items[0].Duration" class="form-control" placeholder="Duration" />
+                    </div>
+                    <div class="col-md-5">
+                        <input name="Items[0].Instructions" class="form-control" placeholder="Instructions" />
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-sm btn-secondary mb-3" onclick="addRow()">
+                + Add Medicine
+            </button>
+
+            <div class="mb-3">
+                <label class="form-label">Notes</label>
+                <textarea asp-for="Notes" class="form-control"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                💾 Save & Print
+            </button>
+
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let index = 1;
+        function addRow() {
+            document.getElementById('medicineList').insertAdjacentHTML('beforeend', `
+            <div class="row mb-2">
+                <div class="col-md-3">
+                    <input name="Items[${index}].MedicineName" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <input name="Items[${index}].Dosage" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <input name="Items[${index}].Duration" class="form-control" />
+                </div>
+                <div class="col-md-5">
+                    <input name="Items[${index}].Instructions" class="form-control" />
+                </div>
+            </div>`);
+            index++;
+        }
+    </script>
+}

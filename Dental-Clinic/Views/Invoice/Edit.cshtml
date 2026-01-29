@@ -1,0 +1,65 @@
+﻿@model Invoice
+
+<h4>Edit Invoice</h4>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label>Invoice #</label>
+            <input asp-for="InvoiceNumber" class="form-control" readonly />
+        </div>
+        <div class="col-md-4">
+            <label>Patient Name</label>
+            <input asp-for="PatientName" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label>Phone</label>
+            <input asp-for="Phone" class="form-control" />
+        </div>
+    </div>
+
+    <!-- Invoice Items Table -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th width="80">Qty</th>
+                <th width="120">Rate</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Items.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <input asp-for="Items[i].Description" class="form-control" />
+                    </td>
+                    <td>
+                        <input asp-for="Items[i].Quantity" class="form-control" />
+                    </td>
+                    <td>
+                        <input asp-for="Items[i].UnitPrice" class="form-control" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <label>Discount</label>
+            <input asp-for="Discount" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label>Paid Amount</label>
+            <input asp-for="PaidAmount" class="form-control" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success mt-3">
+        💾 Update & Print
+    </button>
+</form>
