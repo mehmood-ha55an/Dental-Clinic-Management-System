@@ -1,5 +1,6 @@
 ﻿using Dental_Clinic.Data;
 using Dental_Clinic.Models;
+using Dental_Clinic.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dental_Clinic.Controllers
@@ -54,15 +55,29 @@ namespace Dental_Clinic.Controllers
             return Json(new { success = true });
         }
 
-
-        // Optional: List
-        public IActionResult List()
+        public IActionResult List(int page = 1)
         {
-            var data = _context.Appointments
-                .OrderByDescending(x => x.CreatedAt)
+            int pageSize = 3;
+
+            var query = _context.Appointments
+                .OrderByDescending(x => x.CreatedAt);
+
+            var totalRecords = query.Count();
+
+            var appointments = query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
 
-            return View(data);
+            var model = new PagedResult<Appointment>
+            {
+                Items = appointments,
+                PageNumber = page,
+                PageSize = pageSize,
+                TotalRecords = totalRecords
+            };
+
+            return View(model);
         }
 
         public IActionResult Edit(int id)

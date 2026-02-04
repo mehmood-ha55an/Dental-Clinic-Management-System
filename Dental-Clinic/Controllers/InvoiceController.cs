@@ -1,5 +1,6 @@
 ﻿using Dental_Clinic.Data;
 using Dental_Clinic.Models;
+using Dental_Clinic.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,13 +16,29 @@ namespace Dental_Clinic.Controllers
         }
 
         // LIST
-        public IActionResult Index()
+        public IActionResult Index(int page = 1)
         {
-            var invoices = _context.Invoices
-                .OrderByDescending(x => x.InvoiceDate)
+            int pageSize = 2;
+
+            var query = _context.Invoices
+                .OrderByDescending(x => x.InvoiceDate);
+
+            var totalRecords = query.Count();
+
+            var invoices = query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
 
-            return View(invoices);
+            var model = new PagedResult<Invoice>
+            {
+                Items = invoices,
+                PageNumber = page,
+                PageSize = pageSize,
+                TotalRecords = totalRecords
+            };
+
+            return View(model);
         }
 
         // GET
