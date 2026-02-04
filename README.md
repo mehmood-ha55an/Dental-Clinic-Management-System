@@ -1,12 +1,16 @@
 🦷 Dental Clinic Admin Panel – ASP.NET Core 8 MVC
 
 A modern, lightweight Dental Clinic Management System built using ASP.NET Core 8 MVC.
-Designed for real-world clinic workflows with a clean admin dashboard, appointment handling, prescriptions, and professional invoicing.
+Designed for real-world clinic workflows with a clean admin dashboard, appointment handling, prescriptions, and professional invoicing. </br>
+</br>
+![Dashboard](https://github.com/user-attachments/assets/0d62872c-513d-42dc-8bd1-adedeebe8f2d)
 
+</br>
 🚀 Features
 </br>
 </br>
 📊 Dashboard
+
 - Today’s revenue
 - Monthly & yearly revenue
 - Pending invoices
