@@ -15,7 +15,7 @@ namespace Dental_Clinic.Data
         public DbSet<PrescriptionItem> PrescriptionItems { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<InvoiceItem> InvoicesItem { get; set; }
-
+        public DbSet<User> Users { get; set; }
 
     }
 }

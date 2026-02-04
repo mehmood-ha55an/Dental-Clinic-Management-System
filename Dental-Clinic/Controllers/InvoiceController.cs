@@ -1,4 +1,5 @@
 ﻿using Dental_Clinic.Data;
+using Dental_Clinic.Filters;
 using Dental_Clinic.Models;
 using Dental_Clinic.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dental_Clinic.Controllers
 {
+    [AuthorizeRole("Admin", "Receptionist")]
     public class InvoiceController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -18,7 +20,7 @@ namespace Dental_Clinic.Controllers
         // LIST
         public IActionResult Index(int page = 1)
         {
-            int pageSize = 2;
+            int pageSize = 10;
 
             var query = _context.Invoices
                 .OrderByDescending(x => x.InvoiceDate);

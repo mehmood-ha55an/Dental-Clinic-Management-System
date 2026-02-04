@@ -1,4 +1,5 @@
 using Dental_Clinic.Data;
+using Dental_Clinic.Filters;
 using Dental_Clinic.Models;
 using Dental_Clinic.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using System.Diagnostics;
 
 namespace Dental_Clinic.Controllers
 {
+    [AuthorizeRole("Admin", "Receptionist")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

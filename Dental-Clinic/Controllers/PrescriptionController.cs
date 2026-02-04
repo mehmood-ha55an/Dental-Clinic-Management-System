@@ -1,4 +1,5 @@
 ﻿using Dental_Clinic.Data;
+using Dental_Clinic.Filters;
 using Dental_Clinic.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ namespace Dental_Clinic.Controllers
 {
     public class PrescriptionController : Controller
     {
+        [AuthorizeRole("Admin", "Receptionist")]
 
         private readonly ApplicationDbContext _context;
 

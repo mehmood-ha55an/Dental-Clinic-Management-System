@@ -1,10 +1,12 @@
 ﻿using Dental_Clinic.Data;
+using Dental_Clinic.Filters;
 using Dental_Clinic.Models;
 using Dental_Clinic.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dental_Clinic.Controllers
 {
+    [AuthorizeRole("Admin", "Receptionist")]
     public class AppointmentController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -57,7 +59,7 @@ namespace Dental_Clinic.Controllers
 
         public IActionResult List(int page = 1)
         {
-            int pageSize = 3;
+            int pageSize = 10;
 
             var query = _context.Appointments
                 .OrderByDescending(x => x.CreatedAt);

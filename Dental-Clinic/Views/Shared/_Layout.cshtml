@@ -69,6 +69,16 @@
                             🧾 Invoices
                         </a>
                     </li>
+                    @if (Context.Session.GetString("Username") != null)
+                    {
+                        <li class="nav-item">
+                            <a asp-controller="Account"
+                               asp-action="Logout"
+                               class="nav-link">
+                                👤 Logout
+                            </a>
+                        </li>                      
+                    }
                 </ul>
             </nav>
 
