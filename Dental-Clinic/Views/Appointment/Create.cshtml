@@ -1,66 +1,90 @@
 ﻿@model Appointment
 
-<div class="row">
+<div class="row justify-content-center">
     <div class="col-lg-8">
 
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
+        <div class="card shadow border-0">
+            <div class="card-header bg-gradient bg-primary text-white">
                 <h5 class="mb-0">
-                    <i class="bi bi-calendar-plus"></i>
-                    Add Appointment
+                    <i class="bi bi-calendar-plus me-2"></i>
+                    New Appointment
                 </h5>
             </div>
 
-            <div class="card-body">
+            <div class="card-body p-4">
 
                 <form asp-action="Create" method="post">
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Patient Name</label>
-                            <input asp-for="PatientName" class="form-control" placeholder="Enter patient name" />
+                            <label class="form-label fw-semibold">
+                                Patient Name <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="PatientName"
+                                   class="form-control"
+                                   placeholder="e.g. Ahmed Khan" />
                             <span asp-validation-for="PatientName" class="text-danger"></span>
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Phone / WhatsApp</label>
-                            <input asp-for="PhoneNumber" class="form-control" placeholder="+92XXXXXXXXXX" />
+                            <label class="form-label fw-semibold">
+                                Phone / WhatsApp <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="PhoneNumber"
+                                   class="form-control"
+                                   placeholder="+92 3XX XXXXXXX" />
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <label class="form-label">Appointment Date</label>
-                            <input asp-for="AppointmentDate" type="date" class="form-control" />
+                            <label class="form-label fw-semibold">
+                                Appointment Date
+                            </label>
+                            <input asp-for="AppointmentDate"
+                                   type="date"
+                                   class="form-control" />
                         </div>
 
                         <div class="col-md-4 mb-3">
-                            <label class="form-label">Appointment Time</label>
-                            <input asp-for="AppointmentTime" type="time" class="form-control" />
+                            <label class="form-label fw-semibold">
+                                Appointment Time
+                            </label>
+                            <input asp-for="AppointmentTime"
+                                   type="time"
+                                   class="form-control" />
                         </div>
+
                         <div class="col-md-4 mb-3">
-                            <label class="form-label">Branch</label>
+                            <label class="form-label fw-semibold">
+                                Branch <span class="text-danger">*</span>
+                            </label>
                             <select asp-for="Branch"
                                     asp-items="@(new SelectList(ViewBag.Branches))"
-                                    class="form-select"
-                                    required>
+                                    class="form-select">
                                 <option value="">-- Select Branch --</option>
                             </select>
                             <span asp-validation-for="Branch" class="text-danger"></span>
                         </div>
-
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">WhatsApp Message / Reason</label>
-                        <textarea asp-for="Message" class="form-control" rows="4"
-                                  placeholder="Paste WhatsApp message here..."></textarea>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            WhatsApp Message / Reason
+                        </label>
+                        <textarea asp-for="Message"
+                                  class="form-control"
+                                  rows="4"
+                                  placeholder="Patient message or appointment reason..."></textarea>
                     </div>
 
-                    <div class="text-end">
-                        <button type="submit" class="btn btn-success">
-                            <i class="bi bi-save"></i>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="List" class="btn btn-light">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-success px-4">
+                            <i class="bi bi-check-circle me-1"></i>
                             Save Appointment
                         </button>
                     </div>
@@ -72,6 +96,3 @@
 
     </div>
 </div>
-
-
-

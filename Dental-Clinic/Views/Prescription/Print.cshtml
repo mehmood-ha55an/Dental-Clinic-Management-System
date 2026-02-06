@@ -8,83 +8,205 @@
 
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 14px;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 30px;
+            color: #333;
+        }
+
+        .prescription-box {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #0d6efd;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .clinic-info h2 {
+            margin: 0;
+            color: #0d6efd;
+            font-weight: 700;
+        }
+
+        .clinic-info p {
+            margin: 3px 0;
+            font-size: 13px;
+            opacity: 0.85;
+        }
+
+        .rx-symbol {
+            font-size: 48px;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        /* PATIENT INFO */
+        .info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
             font-size: 14px;
         }
 
-        .box {
-            max-width: 800px;
-            margin: auto;
-            border: 1px solid #000;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            border-bottom: 2px solid #000;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
-
-            .header h2 {
-                margin: 0;
+            .info div {
+                width: 48%;
             }
 
+            .info p {
+                margin: 5px 0;
+            }
+
+        /* SECTION TITLE */
         .section-title {
-            font-weight: bold;
-            margin-top: 15px;
-            border-bottom: 1px solid #000;
+            margin: 25px 0 10px;
+            font-weight: 600;
+            font-size: 15px;
+            color: #0d6efd;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
         }
 
+        /* TABLE */
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 15px;
         }
 
-            table th, table td {
-                border: 1px solid #000;
-                padding: 6px;
+            table thead {
+                background: #0d6efd;
+                color: #fff;
             }
 
+            table th {
+                padding: 10px;
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            table td {
+                padding: 10px;
+                border-bottom: 1px solid #e5e5e5;
+                vertical-align: top;
+            }
+
+            table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+        /* NOTES */
+        .notes {
+            background: #f8f9fa;
+            border-left: 4px solid #0d6efd;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        /* SIGNATURE */
         .signature {
-            margin-top: 40px;
-            text-align: right;
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
+            .signature .doctor {
+                text-align: left;
+            }
+
+            .signature .sign {
+                text-align: right;
+            }
+
+        .signature-line {
+            margin-top: 30px;
+            border-top: 1px solid #000;
+            width: 200px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        /* FOOTER */
+        .footer {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+            text-align: center;
+            font-size: 13px;
+            color: #777;
+        }
+
+        /* PRINT */
         @@media print {
-            .no-print
+            body {
+                background: #fff;
+                padding: 0;
+            }
 
-        {
-            display: none;
-        }
+            .prescription-box {
+                box-shadow: none;
+                border-radius: 0;
+            }
 
+            .no-print {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="box">
+    <div class="prescription-box">
 
-        <!-- Clinic Header -->
+        <!-- HEADER -->
         <div class="header">
-            <h2>Nouman Dental Clinic</h2>
-            <p>Dental & Oral Care</p>
+            <div class="clinic-info">
+                <h2>Nouman Dental Clinic</h2>
+                <p>🦷 Dental & Oral Care</p>
+                <p>Islamabad · Peshawar · Karachi</p>
+                <p>📞 +92 300 1234567</p>
+            </div>
+
+            <div class="rx-symbol">℞</div>
         </div>
 
-        <!-- Patient Info -->
-        <p><strong>Patient:</strong> @Model.Appointment.PatientName</p>
-        <p><strong>Appointment Date:</strong> @Model.Appointment.AppointmentDate.ToString("dd-MMM-yyyy")</p>
-        <p><strong>Doctor:</strong> @Model.DoctorName</p>
+        <!-- PATIENT INFO -->
+        <div class="info">
+            <div>
+                <p><strong>Patient:</strong> @Model.Appointment.PatientName</p>
+                <p><strong>Phone:</strong> @Model.Appointment.PhoneNumber</p>
+            </div>
 
-        <!-- Medicines -->
-        <div class="section-title">℞ Prescription</div>
+            <div style="text-align:right;">
+                <p><strong>Date:</strong> @Model.Appointment.AppointmentDate.ToString("dd MMM yyyy")</p>
+                <p><strong>Doctor:</strong> @Model.DoctorName</p>
+            </div>
+        </div>
+
+        <!-- PRESCRIPTION -->
+        <div class="section-title">Prescription Details</div>
 
         <table>
             <thead>
                 <tr>
                     <th>Medicine</th>
-                    <th>Dosage</th>
-                    <th>Duration</th>
+                    <th width="120">Dosage</th>
+                    <th width="120">Duration</th>
                     <th>Instructions</th>
                 </tr>
             </thead>
@@ -92,7 +214,7 @@
                 @foreach (var item in Model.Items)
                 {
                     <tr>
-                        <td>@item.MedicineName</td>
+                        <td><strong>@item.MedicineName</strong></td>
                         <td>@item.Dosage</td>
                         <td>@item.Duration</td>
                         <td>@item.Instructions</td>
@@ -103,27 +225,37 @@
 
         @if (!string.IsNullOrWhiteSpace(Model.Notes))
         {
-            <div class="section-title">Notes</div>
-            <p>@Model.Notes</p>
+            <div class="section-title">Doctor Notes</div>
+            <div class="notes">
+                @Model.Notes
+            </div>
         }
 
+        <!-- SIGNATURE -->
         <div class="signature">
-            <p><strong>@Model.DoctorName</strong></p>
-            <p>Signature: ____________</p>
+            <div class="doctor">
+                <p><strong>@Model.DoctorName</strong></p>
+                <p>Dental Surgeon</p>
+            </div>
+
+            <div class="sign">
+                <div class="signature-line">Doctor Signature</div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>This prescription is valid only if signed by an authorized doctor</p>
+            <p>Please follow dosage instructions carefully</p>
         </div>
 
     </div>
 
-    <div class="text-center mt-3 no-print">
-        <button onclick="window.print()">Print</button>
-    </div>
+    <script>
+        window.onload = function () {
+            window.print();
+        };
+    </script>
 
 </body>
 </html>
-
-
-<script>
-    window.onload = function () {
-        window.print();
-    };
-</script>

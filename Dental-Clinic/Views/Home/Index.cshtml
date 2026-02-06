@@ -126,7 +126,7 @@
                             <td>@appt.Branch</td>
                             <td>
                                 <span class="badge bg-info">
-                                    @appt.AppointmentTime
+                                    @DateTime.Today.Add(appt.AppointmentTime).ToString("hh:mm tt")
                                 </span>
                             </td>
                             <td>

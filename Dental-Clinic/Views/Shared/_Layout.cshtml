@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Nouman Dental Clinic Admin</title>
+    <title>Nouman Dental Clinic | Admin</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -11,26 +11,73 @@
 
     <style>
         body {
-            background-color: #f8f9fa;
+            background: #f4f6fb;
+            font-family: 'Segoe UI', sans-serif;
         }
 
+        /* Sidebar */
         .sidebar {
             min-height: 100vh;
-            background-color: #0d6efd;
-            color: white;
+            background: linear-gradient(180deg, #0d6efd, #4f46e5);
+            color: #fff;
+            padding: 1.5rem 1rem;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.08);
         }
 
-        .sidebar a {
-            color: white;
-            text-decoration: none;
+        .brand {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: .5px;
         }
 
-        .sidebar a:hover {
-            background-color: rgba(255,255,255,0.2);
+            .brand small {
+                display: block;
+                font-size: .75rem;
+                opacity: .8;
+            }
+
+        .nav-link {
+            color: rgba(255,255,255,.85);
+            border-radius: 10px;
+            padding: .65rem .9rem;
+            margin-bottom: .4rem;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            transition: all .25s ease;
         }
 
-        .sidebar .active {
-            background-color: rgba(255,255,255,0.3);
+            .nav-link i {
+                font-size: 1.1rem;
+            }
+
+            .nav-link:hover {
+                background: rgba(255,255,255,.18);
+                color: #fff;
+                transform: translateX(4px);
+            }
+
+            .nav-link.active {
+                background: rgba(255,255,255,.28);
+                font-weight: 600;
+            }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 1rem;
+            right: 1rem;
+        }
+
+        .logout {
+            background: rgba(255,255,255,.15);
+            border-radius: 10px;
+        }
+
+        /* Main content */
+        main {
+            background: #f4f6fb;
+            min-height: 100vh;
         }
     </style>
 </head>
@@ -40,50 +87,72 @@
         <div class="row">
 
             <!-- Sidebar -->
-            <nav class="col-md-2 d-none d-md-block sidebar p-3">
-                <h5 class="mb-4">🦷 Nouman Clinic</h5>
+            <nav class="col-md-2 d-none d-md-block sidebar position-relative">
 
+                <!-- Brand -->
+                <div class="mb-4 text-center">
+                    <div class="brand">
+                        🦷 Nouman Clinic
+                        <small>Dental Management</small>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
                 <ul class="nav flex-column">
+
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Home" asp-action="Index">
-                            📊 Dashboard
+                        <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")"
+                           asp-controller="Home" asp-action="Index">
+                            <i class="bi bi-speedometer2"></i>
+                            Dashboard
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Appointment" asp-action="Create">
-                            📅 Create Appointment
+                            <i class="bi bi-calendar-plus"></i>
+                            New Appointment
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Appointment" asp-action="List">
-                            📅 Appointments
+                            <i class="bi bi-list-check"></i>
+                            Appointments
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Invoice" asp-action="Create">
-                            🧾 Create Invoice
+                            <i class="bi bi-receipt"></i>
+                            New Invoice
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Invoice" asp-action="Index">
-                            🧾 Invoices
+                            <i class="bi bi-file-earmark-text"></i>
+                            Invoices
                         </a>
                     </li>
-                    @if (Context.Session.GetString("Username") != null)
-                    {
-                        <li class="nav-item">
-                            <a asp-controller="Account"
-                               asp-action="Logout"
-                               class="nav-link">
-                                👤 Logout
-                            </a>
-                        </li>                      
-                    }
                 </ul>
+
+                <!-- Footer / Logout -->
+                @if (Context.Session.GetString("Username") != null)
+                {
+                    <div class="sidebar-footer">
+                        <a asp-controller="Account"
+                           asp-action="Logout"
+                           class="nav-link logout text-center">
+                            <i class="bi bi-box-arrow-right"></i>
+                            Logout
+                        </a>
+                    </div>
+                }
             </nav>
 
             <!-- Main Content -->
-            <main class="col-md-10 ms-sm-auto px-md-4 py-4">
+            <main class="col-md-10 ms-sm-auto px-4 py-4">
                 @RenderBody()
             </main>
 
@@ -92,6 +161,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         const Toast = Swal.mixin({
             toast: true,
@@ -100,8 +170,7 @@
             timer: 2500,
             timerProgressBar: true
         });
-    </script>
-    <script>
+
         document.addEventListener("DOMContentLoaded", function () {
 
             @if (TempData["success"] != null)
@@ -123,10 +192,8 @@
                     });
                     </text>
             }
-
         });
     </script>
-
 
     @RenderSection("Scripts", required: false)
 
