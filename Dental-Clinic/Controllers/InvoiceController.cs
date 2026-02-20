@@ -18,21 +18,52 @@ namespace Dental_Clinic.Controllers
         }
 
         // LIST
-        public IActionResult Index(int page = 1)
+        public IActionResult Index(string search, string status, int page = 1)
         {
             int pageSize = 10;
 
-            var query = _context.Invoices
-                .OrderByDescending(x => x.InvoiceDate);
+            var query = _context.Invoices.AsQueryable();
 
-            var totalRecords = query.Count();
+            // 🔎 SEARCH
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.ToLower();
+
+                query = query.Where(i =>
+                    i.PatientName.ToLower().Contains(search)
+                    || i.InvoiceNumber.ToLower().Contains(search)
+                );
+            }
+
+            // 🎯 STATUS FILTER
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                switch (status)
+                {
+                    case "Paid":
+                        query = query.Where(i => i.RemainingAmount == 0);
+                        break;
+
+                    case "Unpaid":
+                        query = query.Where(i => i.PaidAmount == 0);
+                        break;
+
+                    case "Partial":
+                        query = query.Where(i =>
+                            i.PaidAmount > 0 && i.RemainingAmount > 0);
+                        break;
+                }
+            }
+
+            int totalRecords = query.Count();
 
             var invoices = query
+                .OrderByDescending(i => i.InvoiceDate)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
 
-            var model = new PagedResult<Invoice>
+            var result = new PagedResult<Invoice>
             {
                 Items = invoices,
                 PageNumber = page,
@@ -40,7 +71,10 @@ namespace Dental_Clinic.Controllers
                 TotalRecords = totalRecords
             };
 
-            return View(model);
+            ViewBag.Search = search;
+            ViewBag.Status = status;
+
+            return View(result);
         }
 
         // GET

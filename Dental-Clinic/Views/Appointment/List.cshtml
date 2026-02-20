@@ -12,6 +12,36 @@
     </div>
 </div>
 
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+
+        <form method="get" class="row g-2 align-items-center">
+
+            <div class="col-md-4">
+                <input type="text"
+                       name="search"
+                       value="@ViewBag.Search"
+                       class="form-control"
+                       placeholder="Search by patient, phone, branch..." />
+            </div>
+
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+
+            <div class="col-auto">
+                <a asp-action="List" class="btn btn-outline-secondary">
+                    Reset
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
 <div class="card shadow-sm">
     <div class="card-body p-0">
 
@@ -123,7 +153,7 @@
 
                 <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
                     <a class="page-link"
-                       href="@Url.Action("List", new { page = Model.PageNumber - 1 })">
+                       href="@Url.Action("List", new { page = Model.PageNumber - 1, search = ViewBag.Search })">
                         Previous
                     </a>
                 </li>
@@ -132,7 +162,7 @@
                 {
                     <li class="page-item @(i == Model.PageNumber ? "active" : "")">
                         <a class="page-link"
-                           href="@Url.Action("List", new { page = i })">
+                           href="@Url.Action("List", new { page = i, search = ViewBag.Search })">
                             @i
                         </a>
                     </li>
@@ -140,7 +170,7 @@
 
                 <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
                     <a class="page-link"
-                       href="@Url.Action("List", new { page = Model.PageNumber + 1 })">
+                       href="@Url.Action("List", new { page = Model.PageNumber + 1, search = ViewBag.Search })">
                         Next
                     </a>
                 </li>

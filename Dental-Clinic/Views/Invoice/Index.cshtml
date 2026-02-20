@@ -16,6 +16,57 @@
     </a>
 </div>
 
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+
+        <form method="get" class="row g-2 align-items-center">
+
+            <!-- Search Box -->
+            <div class="col-md-4">
+                <input type="text"
+                       name="search"
+                       value="@ViewBag.Search"
+                       class="form-control"
+                       placeholder="Search by patient or invoice #" />
+            </div>
+
+            <!-- Status Dropdown -->
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="">-- All Invoices --</option>
+                    <option value="Paid"
+                            selected="@(ViewBag.Status == "Paid")">
+                        🟢 Paid
+                    </option>
+                    <option value="Unpaid"
+                            selected="@(ViewBag.Status == "Unpaid")">
+                        🔴 Unpaid
+                    </option>
+                    <option value="Partial"
+                            selected="@(ViewBag.Status == "Partial")">
+                        🟡 Partial
+                    </option>
+                </select>
+            </div>
+
+            <!-- Buttons -->
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-funnel"></i> Filter
+                </button>
+            </div>
+
+            <div class="col-auto">
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    Reset
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
 <div class="card shadow-sm">
     <div class="card-body p-0">
 
@@ -119,7 +170,7 @@
 
                 <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
                     <a class="page-link"
-                       href="@Url.Action("Index", new { page = Model.PageNumber - 1 })">
+                       href="@Url.Action("Index", new { page = Model.PageNumber - 1, search = ViewBag.Search, status = ViewBag.Status })">
                         Previous
                     </a>
                 </li>
@@ -128,7 +179,7 @@
                 {
                     <li class="page-item @(p == Model.PageNumber ? "active" : "")">
                         <a class="page-link"
-                           href="@Url.Action("Index", new { page = p })">
+                           href="@Url.Action("Index", new { page = p, search = ViewBag.Search, status = ViewBag.Status })">
                             @p
                         </a>
                     </li>
@@ -136,7 +187,7 @@
 
                 <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
                     <a class="page-link"
-                       href="@Url.Action("Index", new { page = Model.PageNumber + 1 })">
+                       href="@Url.Action("Index", new { page = Model.PageNumber + 1, search = ViewBag.Search, status = ViewBag.Status })">
                         Next
                     </a>
                 </li>

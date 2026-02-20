@@ -3,6 +3,7 @@ using Dental_Clinic.Filters;
 using Dental_Clinic.Models;
 using Dental_Clinic.Services;
 using Dental_Clinic.ViewModels;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dental_Clinic.Controllers
@@ -36,64 +37,58 @@ namespace Dental_Clinic.Controllers
         public async Task<IActionResult> Create(Appointment model)
         {
             if (!ModelState.IsValid)
-            {
-                ViewBag.Branches = new List<string>
-        {
-            "Islamabad",
-            "Peshawar",
-            "Karachi"
-        };
                 return View(model);
-            }
 
             model.Status = "Pending";
 
             _context.Appointments.Add(model);
             await _context.SaveChangesAsync();
 
-            // 🔥 Trigger RoboCall
-            try
-            {
-                string appointmentDate =
-                    model.AppointmentDate.ToString("dd MMM yyyy");
+            // Combine date + time
+            DateTime appointmentDateTime =
+                model.AppointmentDate.Date
+                .Add(model.AppointmentTime);
 
-                var response = await _roboCall.SendAppointmentCall(
-                    phoneNumber: model.PhoneNumber,
-                    voiceId: 252, // 👈 replace with real voice ID
-                    clinicName: "Nouman Dental Clinic",
-                    appointmentDate: appointmentDate
+            // Subtract 2 hours
+            DateTime callTime = appointmentDateTime.AddHours(-2);
+
+            // If callTime already passed → trigger immediately
+            if (callTime <= DateTime.Now)
+            {
+                await TriggerAppointmentCall(model.Id);
+            }
+            else
+            {
+                BackgroundJob.Schedule(
+                    () => TriggerAppointmentCall(model.Id),
+                    callTime
                 );
-
-                model.CallStatus = "Triggered";
-                model.CallTriggeredAt = DateTime.Now;
-                await _context.SaveChangesAsync();
-            }
-            catch
-            {
-                model.CallStatus = "Failed";
-                await _context.SaveChangesAsync();
             }
 
-            TempData["success"] = "Appointment added & Call triggered!";
+            TempData["success"] = "Appointment saved. Call scheduled successfully!";
             return RedirectToAction("List");
         }
 
+        public async Task TriggerAppointmentCall(int appointmentId)
+        {
+            var appointment = _context.Appointments.Find(appointmentId);
+            if (appointment == null) return;
 
-        // POST
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult Create(Appointment model)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return View(model);
+            string appointmentDate =
+                appointment.AppointmentDate.ToString("dd MMM yyyy");
 
-        //    model.Status = "Pending";   // 🔒 force default
-        //    _context.Appointments.Add(model);
-        //    _context.SaveChanges();
+            await _roboCall.SendAppointmentCall(
+                phoneNumber: appointment.PhoneNumber,
+                voiceId: 252,
+                clinicName: "Nouman Dental Clinic",
+                appointmentDate: appointmentDate
+            );
 
-        //    TempData["success"] = "Appointment added successfully!";
-        //    return RedirectToAction("List");
-        //}
+            appointment.CallStatus = "Triggered";
+            appointment.CallTriggeredAt = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+        }
 
         [HttpPost]
         public IActionResult UpdateStatus(int id, string status)
@@ -108,21 +103,34 @@ namespace Dental_Clinic.Controllers
             return Json(new { success = true });
         }
 
-        public IActionResult List(int page = 1)
+        public IActionResult List(string search, int page = 1)
         {
             int pageSize = 10;
 
-            var query = _context.Appointments
-                .OrderByDescending(x => x.CreatedAt);
+            var query = _context.Appointments.AsQueryable();
 
-            var totalRecords = query.Count();
+            // 🔍 SEARCH
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.ToLower();
+
+                query = query.Where(a =>
+                    a.PatientName.ToLower().Contains(search) ||
+                    a.PhoneNumber.ToLower().Contains(search) ||
+                    a.Branch.ToLower().Contains(search)
+                );
+            }
+
+            int totalRecords = query.Count();
 
             var appointments = query
+                .OrderByDescending(a => a.AppointmentDate)
+                .ThenByDescending(a => a.AppointmentTime)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
 
-            var model = new PagedResult<Appointment>
+            var result = new PagedResult<Appointment>
             {
                 Items = appointments,
                 PageNumber = page,
@@ -130,7 +138,9 @@ namespace Dental_Clinic.Controllers
                 TotalRecords = totalRecords
             };
 
-            return View(model);
+            ViewBag.Search = search;
+
+            return View(result);
         }
 
         public IActionResult Edit(int id)
