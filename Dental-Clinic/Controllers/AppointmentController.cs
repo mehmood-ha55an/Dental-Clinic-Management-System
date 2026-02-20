@@ -1,6 +1,7 @@
 ﻿using Dental_Clinic.Data;
 using Dental_Clinic.Filters;
 using Dental_Clinic.Models;
+using Dental_Clinic.Services;
 using Dental_Clinic.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +11,12 @@ namespace Dental_Clinic.Controllers
     public class AppointmentController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly RoboCallService _roboCall;
 
-        public AppointmentController(ApplicationDbContext context)
+        public AppointmentController(ApplicationDbContext context, RoboCallService roboCall)
         {
             _context = context;
+            _roboCall = roboCall;
         }
 
         // GET
@@ -28,21 +31,69 @@ namespace Dental_Clinic.Controllers
             return View();
         }
 
-        // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Appointment model)
+        public async Task<IActionResult> Create(Appointment model)
         {
             if (!ModelState.IsValid)
+            {
+                ViewBag.Branches = new List<string>
+        {
+            "Islamabad",
+            "Peshawar",
+            "Karachi"
+        };
                 return View(model);
+            }
 
-            model.Status = "Pending";   // 🔒 force default
+            model.Status = "Pending";
+
             _context.Appointments.Add(model);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            TempData["success"] = "Appointment added successfully!";
+            // 🔥 Trigger RoboCall
+            try
+            {
+                string appointmentDate =
+                    model.AppointmentDate.ToString("dd MMM yyyy");
+
+                var response = await _roboCall.SendAppointmentCall(
+                    phoneNumber: model.PhoneNumber,
+                    voiceId: 252, // 👈 replace with real voice ID
+                    clinicName: "Nouman Dental Clinic",
+                    appointmentDate: appointmentDate
+                );
+
+                model.CallStatus = "Triggered";
+                model.CallTriggeredAt = DateTime.Now;
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                model.CallStatus = "Failed";
+                await _context.SaveChangesAsync();
+            }
+
+            TempData["success"] = "Appointment added & Call triggered!";
             return RedirectToAction("List");
         }
+
+
+        // POST
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult Create(Appointment model)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return View(model);
+
+        //    model.Status = "Pending";   // 🔒 force default
+        //    _context.Appointments.Add(model);
+        //    _context.SaveChanges();
+
+        //    TempData["success"] = "Appointment added successfully!";
+        //    return RedirectToAction("List");
+        //}
 
         [HttpPost]
         public IActionResult UpdateStatus(int id, string status)

@@ -27,5 +27,10 @@ namespace Dental_Clinic.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public Prescription? Prescription { get; set; }
 
+        public int? RoboCallId { get; set; }
+        public string? CallStatus { get; set; }
+        public DateTime? CallTriggeredAt { get; set; }
+
+
     }
 }
