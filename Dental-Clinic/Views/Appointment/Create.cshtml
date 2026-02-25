@@ -32,7 +32,7 @@
                             </label>
                             <input asp-for="PhoneNumber"
                                    class="form-control"
-                                   placeholder="+92 3XX XXXXXXX" />
+                                   placeholder="03XXXXXXXXX" />
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
                     </div>
@@ -44,7 +44,8 @@
                             </label>
                             <input asp-for="AppointmentDate"
                                    type="date"
-                                   class="form-control" />
+                                   class="form-control"
+                                   min="@DateTime.Today.ToString("yyyy-MM-dd")" />
                         </div>
 
                         <div class="col-md-4 mb-3">
@@ -53,7 +54,9 @@
                             </label>
                             <input asp-for="AppointmentTime"
                                    type="time"
-                                   class="form-control" />
+                                   class="form-control"
+                                   min="14:00"
+                                   max="20:00" />
                         </div>
 
                         <div class="col-md-4 mb-3">

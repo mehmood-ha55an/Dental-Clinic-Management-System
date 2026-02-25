@@ -4,6 +4,7 @@ using Dental_Clinic.Models;
 using Dental_Clinic.Services;
 using Dental_Clinic.ViewModels;
 using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dental_Clinic.Controllers
@@ -21,6 +22,7 @@ namespace Dental_Clinic.Controllers
         }
 
         // GET
+        [AllowAnonymous]
         public IActionResult Create()
         {
             ViewBag.Branches = new List<string>
@@ -32,6 +34,7 @@ namespace Dental_Clinic.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Appointment model)
@@ -49,8 +52,8 @@ namespace Dental_Clinic.Controllers
                 model.AppointmentDate.Date
                 .Add(model.AppointmentTime);
 
-            // Subtract 2 hours
-            DateTime callTime = appointmentDateTime.AddHours(-2);
+            // Subtract 3 hours
+            DateTime callTime = appointmentDateTime.AddHours(-3);
 
             // If callTime already passed → trigger immediately
             if (callTime <= DateTime.Now)
@@ -69,6 +72,7 @@ namespace Dental_Clinic.Controllers
             return RedirectToAction("List");
         }
 
+        [AllowAnonymous]
         public async Task TriggerAppointmentCall(int appointmentId)
         {
             var appointment = _context.Appointments.Find(appointmentId);
@@ -80,7 +84,7 @@ namespace Dental_Clinic.Controllers
             await _roboCall.SendAppointmentCall(
                 phoneNumber: appointment.PhoneNumber,
                 voiceId: 252,
-                clinicName: "Nouman Dental Clinic",
+                clinicName: "Numan Dental and Aesthetic Clinic",
                 appointmentDate: appointmentDate
             );
 
@@ -103,6 +107,7 @@ namespace Dental_Clinic.Controllers
             return Json(new { success = true });
         }
 
+        [AllowAnonymous]
         public IActionResult List(string search, int page = 1)
         {
             int pageSize = 10;

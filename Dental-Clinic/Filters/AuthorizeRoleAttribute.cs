@@ -14,6 +14,14 @@
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
+            // ✅ Allow anonymous actions
+            var allowAnonymous = context.ActionDescriptor.EndpointMetadata
+                .OfType<Microsoft.AspNetCore.Authorization.AllowAnonymousAttribute>()
+                .Any();
+
+            if (allowAnonymous)
+                return;
+
             var session = context.HttpContext.Session;
 
             var username = session.GetString("Username");
