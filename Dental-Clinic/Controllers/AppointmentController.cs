@@ -77,10 +77,10 @@ namespace Dental_Clinic.Controllers
         {
             return branch switch
             {
-                "Islamabad" => 101,   // 👈 Replace with real voice id
+                "Islamabad" => 252,   // 👈 Replace with real voice id
                 "Peshawar" => 202,
                 "Karachi" => 303,
-                _ => 101 // default fallback
+                _ => 252 // default fallback
             };
         }
 
