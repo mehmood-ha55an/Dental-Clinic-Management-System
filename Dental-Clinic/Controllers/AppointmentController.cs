@@ -73,6 +73,18 @@ namespace Dental_Clinic.Controllers
         }
 
         [AllowAnonymous]
+        private int GetVoiceIdByBranch(string branch)
+        {
+            return branch switch
+            {
+                "Islamabad" => 101,   // 👈 Replace with real voice id
+                "Peshawar" => 202,
+                "Karachi" => 303,
+                _ => 101 // default fallback
+            };
+        }
+
+        [AllowAnonymous]
         public async Task TriggerAppointmentCall(int appointmentId)
         {
             var appointment = _context.Appointments.Find(appointmentId);
@@ -81,9 +93,12 @@ namespace Dental_Clinic.Controllers
             string appointmentDate =
                 appointment.AppointmentDate.ToString("dd MMM yyyy");
 
+            // ✅ Select Voice Based on Branch
+            int voiceId = GetVoiceIdByBranch(appointment.Branch);
+
             await _roboCall.SendAppointmentCall(
                 phoneNumber: appointment.PhoneNumber,
-                voiceId: 252,
+                voiceId: voiceId,
                 clinicName: "Numan Dental and Aesthetic Clinic",
                 appointmentDate: appointmentDate
             );

@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dental_Clinic.Controllers
 {
+    [AuthorizeRole("Admin", "Receptionist")]
     public class PrescriptionController : Controller
     {
-        [AuthorizeRole("Admin", "Receptionist")]
-
+       
         private readonly ApplicationDbContext _context;
 
         public PrescriptionController(ApplicationDbContext context)
