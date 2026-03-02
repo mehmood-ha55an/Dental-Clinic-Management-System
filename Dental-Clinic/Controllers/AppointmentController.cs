@@ -68,8 +68,8 @@ namespace Dental_Clinic.Controllers
                 );
             }
 
-            TempData["success"] = "Appointment saved. Call scheduled successfully!";
-            return RedirectToAction("List");
+            TempData["Success"] = "Your appointment has been booked successfully!";
+            return RedirectToAction("Create");
         }
 
         [AllowAnonymous]
