@@ -4,6 +4,9 @@ A modern, lightweight Dental Clinic Management System built using ASP.NET Core 8
 Designed for real-world clinic workflows with a clean admin dashboard, appointment handling, prescriptions, and professional invoicing. </br>
 </br>
 ![Dashboard](https://github.com/user-attachments/assets/0d62872c-513d-42dc-8bd1-adedeebe8f2d)
+</br>
+
+<img width="1391" height="966" alt="image" src="https://github.com/user-attachments/assets/94a7a4b3-7f3a-4900-9389-d3e9ce84431c" />
 
 </br>
 🚀 Features
