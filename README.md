@@ -1,4 +1,4 @@
-🦷 Dental Clinic Admin Panel – ASP.NET Core 8 MVC
+🦷 Dental Clinic Management System – ASP.NET Core 8 MVC
 
 A modern, lightweight Dental Clinic Management System built using ASP.NET Core 8 MVC.
 Designed for real-world clinic workflows with a clean admin dashboard, appointment handling, prescriptions, and professional invoicing. </br>
