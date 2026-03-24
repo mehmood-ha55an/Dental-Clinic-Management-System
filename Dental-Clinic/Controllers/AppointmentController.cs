@@ -47,16 +47,21 @@ namespace Dental_Clinic.Controllers
             _context.Appointments.Add(model);
             await _context.SaveChangesAsync();
 
-            // Combine date + time
-            DateTime appointmentDateTime =
-                model.AppointmentDate.Date
-                .Add(model.AppointmentTime);
+            var pakistanTimeZone =
+             TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
 
-            // Subtract 3 hours
-            DateTime callTime = appointmentDateTime.AddHours(-3);
+            // appointment in Pakistan time
+            DateTime appointmentLocal =
+                model.AppointmentDate.Date.Add(model.AppointmentTime);
 
-            // If callTime already passed → trigger immediately
-            if (callTime <= DateTime.Now)
+            // subtract 1 hour reminder
+            DateTime callLocal = appointmentLocal.AddHours(-1);
+
+            // convert to UTC for Hangfire
+            DateTime callUtc =
+                TimeZoneInfo.ConvertTimeToUtc(callLocal, pakistanTimeZone);
+
+            if (callUtc <= DateTime.UtcNow)
             {
                 await TriggerAppointmentCall(model.Id);
             }
@@ -64,7 +69,7 @@ namespace Dental_Clinic.Controllers
             {
                 BackgroundJob.Schedule(
                     () => TriggerAppointmentCall(model.Id),
-                    callTime
+                    callUtc
                 );
             }
 
@@ -77,10 +82,10 @@ namespace Dental_Clinic.Controllers
         {
             return branch switch
             {
-                "Islamabad" => 252,   // 👈 Replace with real voice id
-                "Peshawar" => 202,
-                "Karachi" => 303,
-                _ => 252 // default fallback
+                "Islamabad" => 378,   // Replace with real voice id
+                "Peshawar" => 385,
+                "Karachi" => 386,
+                _ => 378 // default fallback
             };
         }
 
@@ -104,7 +109,7 @@ namespace Dental_Clinic.Controllers
             );
 
             appointment.CallStatus = "Triggered";
-            appointment.CallTriggeredAt = DateTime.Now;
+            appointment.CallTriggeredAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
         }
@@ -122,7 +127,6 @@ namespace Dental_Clinic.Controllers
             return Json(new { success = true });
         }
 
-        [AllowAnonymous]
         public IActionResult List(string search, int page = 1)
         {
             int pageSize = 10;

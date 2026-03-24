@@ -23,20 +23,102 @@
             <h6>Medicines</h6>
 
             <div id="medicineList">
-                <div class="row mb-2">
+
+                <!-- 1 -->
+                <div class="row mb-2 align-items-center medicine-row">
                     <div class="col-md-3">
-                        <input name="Items[0].MedicineName" class="form-control" placeholder="Medicine" />
+                        <input name="Items[0].MedicineName" class="form-control" value="Augmentin" />
                     </div>
                     <div class="col-md-2">
-                        <input name="Items[0].Dosage" class="form-control" placeholder="Dosage" />
+                        <input name="Items[0].Dosage" class="form-control" value="625 mg" />
                     </div>
                     <div class="col-md-2">
-                        <input name="Items[0].Duration" class="form-control" placeholder="Duration" />
+                        <input name="Items[0].Duration" class="form-control" value="3 Days" />
                     </div>
-                    <div class="col-md-5">
-                        <input name="Items[0].Instructions" class="form-control" placeholder="Instructions" />
+                    <div class="col-md-4">
+                        <input name="Items[0].Instructions" class="form-control" placeholder="After meal" />
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">✖</button>
                     </div>
                 </div>
+
+                <!-- 2 -->
+                <div class="row mb-2 align-items-center medicine-row">
+                    <div class="col-md-3">
+                        <input name="Items[1].MedicineName" class="form-control" value="Synflex" />
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Items[1].Dosage" class="form-control" value="550 mg" />
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Items[1].Duration" class="form-control" value="3 Days" />
+                    </div>
+                    <div class="col-md-4">
+                        <input name="Items[1].Instructions" class="form-control" placeholder="After meal" />
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">✖</button>
+                    </div>
+                </div>
+
+                <!-- 3 -->
+                <div class="row mb-2 align-items-center medicine-row">
+                    <div class="col-md-3">
+                        <input name="Items[2].MedicineName" class="form-control" value="Flagyl" />
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Items[2].Dosage" class="form-control" value="200 mg" />
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Items[2].Duration" class="form-control" value="3 Days" />
+                    </div>
+                    <div class="col-md-4">
+                        <input name="Items[2].Instructions" class="form-control" placeholder="After meal" />
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">✖</button>
+                    </div>
+                </div>
+
+                <!-- 4 -->
+                <div class="row mb-2 align-items-center medicine-row">
+                    <div class="col-md-3">
+                        <input name="Items[3].MedicineName" class="form-control" value="Riam" />
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Items[3].Dosage" class="form-control" value="" placeholder="Dosage" />
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Items[3].Duration" class="form-control" value="3 Days" />
+                    </div>
+                    <div class="col-md-4">
+                        <input name="Items[3].Instructions" class="form-control" placeholder="After meal" />
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">✖</button>
+                    </div>
+                </div>
+
+                <!-- 5 -->
+                <div class="row mb-2 align-items-center medicine-row">
+                    <div class="col-md-3">
+                        <input name="Items[4].MedicineName" class="form-control" value="Danzen DS" />
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Items[4].Dosage" class="form-control" value="" placeholder="Dosage" />
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Items[4].Duration" class="form-control" value="3 Days" />
+                    </div>
+                    <div class="col-md-4">
+                        <input name="Items[4].Instructions" class="form-control" placeholder="After meal" />
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">✖</button>
+                    </div>
+                </div>
+
             </div>
 
             <button type="button" class="btn btn-sm btn-secondary mb-3" onclick="addRow()">
@@ -59,10 +141,11 @@
 
 @section Scripts {
     <script>
-        let index = 1;
+        let index = 5;
+
         function addRow() {
             document.getElementById('medicineList').insertAdjacentHTML('beforeend', `
-            <div class="row mb-2">
+            <div class="row mb-2 align-items-center medicine-row">
                 <div class="col-md-3">
                     <input name="Items[${index}].MedicineName" class="form-control" />
                 </div>
@@ -72,11 +155,20 @@
                 <div class="col-md-2">
                     <input name="Items[${index}].Duration" class="form-control" />
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-4">
                     <input name="Items[${index}].Instructions" class="form-control" />
+                </div>
+                <div class="col-md-1 text-end">
+                    <button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">✖</button>
                 </div>
             </div>`);
             index++;
         }
+
+        function removeRow(button) {
+            const row = button.closest('.medicine-row');
+            row.remove();
+        }
+
     </script>
 }

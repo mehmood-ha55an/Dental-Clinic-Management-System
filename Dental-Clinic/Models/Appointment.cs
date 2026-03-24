@@ -31,6 +31,5 @@ namespace Dental_Clinic.Models
         public string? CallStatus { get; set; }
         public DateTime? CallTriggeredAt { get; set; }
 
-
     }
 }

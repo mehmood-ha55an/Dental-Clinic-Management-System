@@ -9,8 +9,7 @@ namespace Dental_Clinic.Models
         [Required]
         public int AppointmentId { get; set; }
 
-        [Required]
-        public string DoctorName { get; set; } = null!;
+        public string? DoctorName { get; set; }
 
         public string? Notes { get; set; }
 
