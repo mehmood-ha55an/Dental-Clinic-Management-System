@@ -25,7 +25,14 @@
                        placeholder="Search by patient, phone, branch..." />
             </div>
 
-            <div class="col-auto">
+            <div class="col-md-3">
+                <input type="date"
+                       name="appointmentDate"
+                       value="@ViewBag.AppointmentDate"
+                       class="form-control" />
+            </div>
+
+            <div class="col-auto" style="margin-left: 10px">
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-search"></i> Search
                 </button>
@@ -162,7 +169,7 @@
                 {
                     <li class="page-item @(i == Model.PageNumber ? "active" : "")">
                         <a class="page-link"
-                           href="@Url.Action("List", new { page = i, search = ViewBag.Search })">
+                           href="@Url.Action("List", new { page = i, search = ViewBag.Search, appointmentDate = ViewBag.AppointmentDate})">
                             @i
                         </a>
                     </li>

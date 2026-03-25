@@ -127,7 +127,7 @@ namespace Dental_Clinic.Controllers
             return Json(new { success = true });
         }
 
-        public IActionResult List(string search, int page = 1)
+        public IActionResult List(string search, DateTime? appointmentDate, int page = 1)
         {
             int pageSize = 10;
 
@@ -145,11 +145,18 @@ namespace Dental_Clinic.Controllers
                 );
             }
 
+            // 📅 DATE FILTER
+            if (appointmentDate.HasValue)
+            {
+                var selectedDate = appointmentDate.Value.Date;
+
+                query = query.Where(a => a.AppointmentDate.Date == selectedDate);
+            }
+
             int totalRecords = query.Count();
 
             var appointments = query
-                .OrderByDescending(a => a.AppointmentDate)
-                .ThenByDescending(a => a.AppointmentTime)
+                .OrderByDescending(a => a.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -163,6 +170,7 @@ namespace Dental_Clinic.Controllers
             };
 
             ViewBag.Search = search;
+            ViewBag.AppointmentDate = appointmentDate?.ToString("yyyy-MM-dd");
 
             return View(result);
         }
